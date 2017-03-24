@@ -46,7 +46,6 @@ sum_MV = sum(MVP)
 percent_MV = sum_MV/966581*100
 
 %% Removing features with large amount of missing values
-% Using 10% and 20% as threshold for maximum percentage missing per protein
 
 nrows = size(M,1);
 
@@ -54,14 +53,7 @@ M10 = M(:,sum(isnan(M),1)/nrows*100<10);
 M20 = M(:,sum(isnan(M),1)/nrows*100<20);
 clear nrows;
 
-%% Impute missing values using k-Nearest Neighbors
-% Using k=5 and k=8
-% Default distance measure: Euclidean
-
 M10_knn5 = knnimpute(M10',5)';
 M10_knn8 = knnimpute(M10',8)';
 M20_knn5 = knnimpute(M20',5)';
 M20_knn8 = knnimpute(M20',8)';
-
-%% Principal Component Analysis
-
