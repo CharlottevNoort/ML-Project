@@ -19,6 +19,8 @@ N = [M(:,3) M(:,74)];
 O = mean(N','omitnan');
 M(:,3) = O';
 
+clear N O
+
 %Return matrix to 77x12553 orientation for further use
 M = M';
 
@@ -47,6 +49,7 @@ percent_MV = sum_MV/966581*100
 
 %% Removing features with large amount of missing values
 % Using 10% and 20% as threshold for maximum percentage missing per protein
+% Input: M from first section
 
 nrows = size(M,1);
 
@@ -57,11 +60,11 @@ clear nrows;
 %% Impute missing values using k-Nearest Neighbors
 % Using k=5 and k=8
 % Default distance measure: Euclidean
+% Input: M10 and M20 from previous section
 
 M10_knn5 = knnimpute(M10',5)';
 M10_knn8 = knnimpute(M10',8)';
 M20_knn5 = knnimpute(M20',5)';
 M20_knn8 = knnimpute(M20',8)';
 
-%% Principal Component Analysis
-
+clear M10 M20
