@@ -47,7 +47,7 @@ MVS_percent = MVS/12553*100;
 sum_MV = sum(MVP)
 percent_MV = sum_MV/966581*100
 
-%% Removing features with large amount of missing values
+%% Remove features with large amount of missing values
 % Using 10% and 20% as threshold for maximum percentage missing per protein
 % Input: M from first section
 
@@ -68,3 +68,63 @@ M20_knn5 = knnimpute(M20',5)';
 M20_knn8 = knnimpute(M20',8)';
 
 clear M10 M20
+
+%% Principal Component Analysis
+% For reduction of dimensionality
+% Input: Imputed matrices from previous section
+%How can we make this a loop that saves output under different names for
+%each input matrix?? To get it to do something like this, but in a loop:
+
+display('Running Principal Component Analysis ...')
+
+[loadings,score,latent,tsquared,explained,mu] = pca(M10_knn5, 'Economy', false);
+scores_M10_5 = score;
+[loadings,score,latent,tsquared,explained,mu] = pca(M10_knn8, 'Economy', false);
+scores_M10_8 = score;
+[loadings,score,latent,tsquared,explained,mu] = pca(M20_knn5, 'Economy', false);
+scores_M20_5 = score;
+[loadings,score,latent,tsquared,explained,mu] = pca(M20_knn8, 'Economy', false);
+scores_M20_8 = score;
+
+%% Whitening
+% Why is the input here regular data matrices, rather than PCA output??
+% Haven't gotten this part  to work in any way yet... Charlotte
+
+display('Whitening data ...')
+
+SMW10_knn5 = whiten(M10_knn5)
+SWM10_knn8 = whiten(M10_knn8)
+SWM20_knn5 = whiten(M20_knn5)
+SWM20_knn8 = whiten(M20_knn8)
+
+%% Plotting PCA and PCA - Whitening
+
+diagS = diag(Swhite);
+ax3 = subplot(2,2,3);
+plot(ax3,1:100,100*cumsum(PCAVar(1:100))/sum(PCAVar(1:100)),'r-^',...
+    1:100,100*cumsum(diagS(1:100))/sum(diagS(1:100)),'b-o');
+xlabel('Number of Principal Components');
+ylabel('Percent Variance Explained in X');
+legend({'PCA' 'PCA Whitening'},'location','SE');
+grid('on');
+clear diagS S PCAVar;
+
+%% K-fold cross validation
+% To determine optimal number of Components
+
+%for k = [5 8]
+[RMSECV,CI] = pcaKFold(M20_knn8,10); %CI gives the confidence interval
+
+errorbar(RMSECV,CI','DisplayName','10-fold Cross-validation',...
+    'MarkerFaceColor',[1 0 0],...
+    'MarkerEdgeColor',[1 0 0],...
+    'Marker','*',...
+    'Color',[0 0 0]);
+
+grid('on');
+
+ylim([0 4]);
+xlabel('Number of Principal Components');
+ylabel('Cross-validation error (RMSECV(c))');
+
+%% Next section
