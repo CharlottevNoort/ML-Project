@@ -4,5 +4,3 @@ A = X'*X;
 [V,D] = eig(A);
 X = X*V*diag(1./(diag(D)+fudgefactor).^(1/2))*V';
 end
-
-

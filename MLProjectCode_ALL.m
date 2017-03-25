@@ -1,3 +1,7 @@
+%% Load data
+
+load data_breastcancer
+
 %% Average values for samples that belong to the same patient
 % Sets of samples averaged here: 1 and 10; 2 and 68; 3 and 74
 
@@ -110,7 +114,7 @@ grid('on');
 clear diagS S PCAVar;
 
 %% K-fold cross validation
-% To determine optimal number of Components
+% To determine optimal number of Principal Components
 
 %for k = [5 8]
 [RMSECV,CI] = pcaKFold(M20_knn8,10); %CI gives the confidence interval
@@ -127,4 +131,107 @@ ylim([0 4]);
 xlabel('Number of Principal Components');
 ylabel('Cross-validation error (RMSECV(c))');
 
-%% Next section
+%% Automatic evaluation of number of clusters
+
+disp('Evaluation of number of clusters...')
+
+for i=2:size(RMSECV,1)
+    prev = RMSECV(i-1);
+    value = RMSECV(i);
+    
+    %get the index, considering error below 0.03 and a growing tendency
+    if ((prev < value) && (value < 0.03))
+        maxCV = i-1;
+        break;
+    end
+end
+
+epsilon = 0.000001; %smallconstant
+xPCAwhite = diag(1./sqrt(diag(Swhite(1:maxCV,:)) + epsilon)) * Uwhite(:,1:maxCV)' * M10_knn8;
+
+ResultCosine = [];
+ResultEuclidean = [];
+
+
+NR = 10;
+%we have 4 subtypes of cancer on the database. 
+for num_of_cluster = 1:4
+    
+    sCosine = 0;
+    for i=1:NR %small number of observations
+        idxCosinex = kmeans(xPCAwhite',num_of_cluster,'MaxIter',10000,...
+            'distance','cosine','replicate',100);
+        sCosine = sCosine + mean(silhouette(xPCAwhite',idxCosinex,'cosine'));
+    end
+    
+    ResultCosine(:,num_of_cluster) = sCosine/NR;
+    
+    sEuclidean = 0;
+    for i=1:NR %small number of observations
+        idxEuclideanx = kmeans(xPCAwhite',num_of_cluster,'MaxIter',10000,...
+            'distance','sqeuclidean','replicate',100);
+        sEuclidean = sEuclidean + mean(silhouette(xPCAwhite',idxEuclideanx,'euclidean'));
+     end
+    
+    ResultEuclidean(:,num_of_cluster) = sEuclidean/NR;
+    
+end
+
+figure;
+
+plot1 = plot([ResultCosine' ResultEuclidean'],'MarkerSize',6,'LineStyle','--');
+set(plot1(1),'DisplayName','K-means (distance: cosine)',...
+    'MarkerFaceColor',[1 0 0],...
+    'MarkerEdgeColor',[1 0 0],...
+    'Marker','o',...
+    'Color',[0 0 0]);
+set(plot1(2),'DisplayName','K-means (distance: euclidean)',...
+    'MarkerFaceColor',[0 0 0],...
+    'MarkerEdgeColor',[0 0 0],...
+    'Marker','square',...
+    'Color',[0 0 1]);
+
+% Create xlabel
+xlabel('Number of Clusters');
+% Create ylabel
+ylabel('Silhouette coefficient');
+grid('on');
+% Create legend
+legend('show');
+
+%% K-means Clustering
+
+[IDX,C,sumd,d] = kmeans(M_PAM_20_KNN8,4,'distance','cosine','Replicates',20);
+
+[B,ix] = sort(IDX);
+
+imagesc(M_PAM_20_KNN8(ix,:))
+lines = find(diff(B));
+for l = lines'
+    hl = refline(0,l);
+    set(hl,'LineWidth',3,'color','k');
+end
+title('Expression of PAM50 proteins for patiens ordered by cluster')
+
+D = squareform(pdist(M_PAM_20_KNN8(ix,:),'cosine'));
+imagesc(D)
+lines = find(diff(B));
+for l = lines'
+    hl = refline(0,l);
+    set(hl,'LineWidth',3,'color','k');
+end
+title('Distance matrix ordered with kmeans 4 clusters')
+
+%% Hierarchical Clustering
+
+%for X = [M10_knn5 M10_knn8 M20_knn5 M20_knn8]
+Y = pdist(X,'cosine');
+Z = linkage(Y,'weighted'); 
+[H, T] = dendrogram(Z,0,'Colorthreshold',0.98);
+C = cluster(Z,'maxclust',4);
+Table_HC = crosstab(C,PAM_groups)
+adjrand(C,PAM_groups)
+
+%% Fuzzy Clustering
+
+%% T-test
