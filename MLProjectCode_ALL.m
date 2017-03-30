@@ -233,22 +233,20 @@ Table_HC = crosstab(C,PAM_groups)
 adjrand(C,PAM_groups)
 
 %% Fuzzy clustering 
-
+%fcm(matrix,number_of_clusters)
        [center,U,obj_fcn] = fcm(data,3);
         maxU = max(U);
-        % Find the data points with highest grade of membership in cluster 1
-%          index1 = find(U(1,:) == maxU);
-%          % Find the data points with highest grade of membership in cluster 2
-%          index2 = find(U(2,:) == maxU);
-%          index3 = find(U(3,:) == maxU);
-%          index4 = find(U(4,:) == maxU);
-         
+% U contains values for each patients association with each cluster
+% maxU is the highest value for each patient
+% gives each patient a label, 1-n, n=#of clusters        
          classify=zeros(77,1);
          for i=1:77;
              [max_value,row]=max(U(:,i));
              classify(i,1)=row;
          end
          
-        [AR,RI]=RandIndex(classify,PAM_groups)
+ %calc RAND, PAM_groups=patient clustered by cancer type        
+        [AR,RI]=RandIndex(classify,PAM_groups) 
+                 
 
 %% T-test
