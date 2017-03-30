@@ -96,10 +96,13 @@ scores_M20_8 = score;
 
 display('Whitening data ...')
 
-SMW10_knn5 = whiten(M10_knn5)
-SWM10_knn8 = whiten(M10_knn8)
-SWM20_knn5 = whiten(M20_knn5)
-SWM20_knn8 = whiten(M20_knn8)
+% I commented this out because I'm pretty sure it doesn't work and I don't think the output is connected to anything.
+% If it is necessary add it back in. Just trying to clean up. -AG
+% as far as I can tell xPCAwhite does the whitening.
+% SMW10_knn5 = whiten(M10_knn5)
+% SWM10_knn8 = whiten(M10_knn8)
+% SWM20_knn5 = whiten(M20_knn5)
+% SWM20_knn8 = whiten(M20_knn8)
 
 %% Plotting PCA and PCA - Whitening
 
@@ -146,7 +149,7 @@ for i=2:size(RMSECV,1)
     end
 end
 
-%this also looks like whitening? which is the correct one? -AG
+%this looks like whitening
 epsilon = 0.000001; %smallconstant
 xPCAwhite = diag(1./sqrt(diag(Swhite(1:maxCV,:)) + epsilon)) * Uwhite(:,1:maxCV)' * M10_knn8;
 
