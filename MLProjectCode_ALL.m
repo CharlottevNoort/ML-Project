@@ -146,6 +146,7 @@ for i=2:size(RMSECV,1)
     end
 end
 
+%this also looks like whitening? which is the correct one? -AG
 epsilon = 0.000001; %smallconstant
 xPCAwhite = diag(1./sqrt(diag(Swhite(1:maxCV,:)) + epsilon)) * Uwhite(:,1:maxCV)' * M10_knn8;
 
