@@ -47,8 +47,24 @@ adjrand(C,PAM_groups)
 Table = crosstab(IDX,PAM_groups)
 [AR,RI]=RandIndex(IDX,PAM_groups)
 
-%% Fuzzy Clustering
+%% Fuzzy clustering 
 
+       [center,U,obj_fcn] = fcm(data,3);
+        maxU = max(U);
+        % Find the data points with highest grade of membership in cluster 1
+%          index1 = find(U(1,:) == maxU);
+%          % Find the data points with highest grade of membership in cluster 2
+%          index2 = find(U(2,:) == maxU);
+%          index3 = find(U(3,:) == maxU);
+%          index4 = find(U(4,:) == maxU);
+         
+         classify=zeros(77,1);
+         for i=1:77;
+             [max_value,row]=max(U(:,i));
+             classify(i,1)=row;
+         end
+         
+        [AR,RI]=RandIndex(classify,PAM_groups)
 
 
 %% T-test
