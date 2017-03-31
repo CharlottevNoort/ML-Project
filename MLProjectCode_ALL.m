@@ -103,10 +103,12 @@ display('Whitening data ...')
 % SWM20_knn8 = whiten(M20_knn8)
 
 %this looks like whitening
+%What is Swhite and Uwhite? - CN
 epsilon = 0.000001; %smallconstant
 xPCAwhite = diag(1./sqrt(diag(Swhite(1:maxCV,:)) + epsilon)) * Uwhite(:,1:maxCV)' * M10_knn8;
 
-%% Plotting PCA and PCA - Whitening
+%% Plotting PCA vs Whitened PCA
+% Shows that there are differences, for ecplanation of why whitening is needed
 
 diagS = diag(Swhite);
 ax3 = subplot(2,2,3);
@@ -155,6 +157,7 @@ ResultCosine = [];
 ResultEuclidean = [];
 
 NR = 10;
+
 %we have 4 subtypes of cancer on the database. 
 for num_of_cluster = 1:4
     
