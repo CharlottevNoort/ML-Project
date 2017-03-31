@@ -241,7 +241,8 @@ adjrand(C,PAM_groups)
 
 %% Fuzzy clustering 
 %fcm(matrix,number_of_clusters)
-       [center,U,obj_fcn] = fcm(data,3);
+       options=[NaN 100000 0 NaN]
+       [center,U,obj_fcn] = fcm(data,3,options);
         maxU = max(U);
 % U contains values for each patients association with each cluster
 % maxU is the highest value for each patient
