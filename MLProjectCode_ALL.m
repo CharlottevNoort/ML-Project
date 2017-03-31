@@ -91,8 +91,6 @@ scores_M20_5 = score;
 scores_M20_8 = score;
 
 %% Whitening
-% Why is the input here regular data matrices, rather than PCA output??
-% Haven't gotten this part  to work in any way yet... Charlotte
 
 display('Whitening data ...')
 
@@ -103,6 +101,10 @@ display('Whitening data ...')
 % SWM10_knn8 = whiten(M10_knn8)
 % SWM20_knn5 = whiten(M20_knn5)
 % SWM20_knn8 = whiten(M20_knn8)
+
+%this looks like whitening
+epsilon = 0.000001; %smallconstant
+xPCAwhite = diag(1./sqrt(diag(Swhite(1:maxCV,:)) + epsilon)) * Uwhite(:,1:maxCV)' * M10_knn8;
 
 %% Plotting PCA and PCA - Whitening
 
@@ -149,13 +151,8 @@ for i=2:size(RMSECV,1)
     end
 end
 
-%this looks like whitening
-epsilon = 0.000001; %smallconstant
-xPCAwhite = diag(1./sqrt(diag(Swhite(1:maxCV,:)) + epsilon)) * Uwhite(:,1:maxCV)' * M10_knn8;
-
 ResultCosine = [];
 ResultEuclidean = [];
-
 
 NR = 10;
 %we have 4 subtypes of cancer on the database. 
