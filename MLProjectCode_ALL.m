@@ -103,9 +103,12 @@ display('Whitening data ...')
 % SWM20_knn8 = whiten(M20_knn8)
 
 %this looks like whitening
-%What is Swhite and Uwhite? - CN
-epsilon = 0.000001; %smallconstant
-xPCAwhite = diag(1./sqrt(diag(Swhite(1:maxCV,:)) + epsilon)) * Uwhite(:,1:maxCV)' * M10_knn8;
+X = score;
+sigma = X * X' / size(X,2);
+[Uwhite,Swhite,~] = svd(sigma);
+clear sigma;
+epsilon = 0.000001; %small constant
+xPCAwhite = diag(1./sqrt(diag(Swhite(:,:)) + epsilon)) * Uwhite(:,:)' * X;
 
 %% Plotting PCA vs Whitened PCA
 % Shows that there are differences, for ecplanation of why whitening is needed
