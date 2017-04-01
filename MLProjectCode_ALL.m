@@ -254,7 +254,7 @@ adjrand(C,PAM_groups)
          end
          
  %calc RAND, PAM_groups=patient clustered by cancer type        
-        [AR,RI]=RandIndex(classify,PAM_groups) 
+        AR=adjrand(classify,PAM_groups)
                  
 
 %% T-test
