@@ -271,6 +271,92 @@ classify=zeros(77,1);
    [s,h] = silhouette(data,classify)
    silhouette_score=mean(s)
                 
-                 
+ 
+ 
+ 
 
-%% ANOVA
+%% ANOVA - Silhouette coefficent
+sHierarchical(:,r) = mean(silhouette(xPCAwhite',C));
+sFuzzy(:,r) = mean(silhouette(xPCAwhite',classify));
+sEuclidean(:,i) = mean(silhouette(xPCAwhite',idxEuclideanx));
+sCosine(:,i) = mean(silhouette(xPCAwhite',idxCosinex));
+
+
+alpha = 0.05;
+
+ANOVA1(:,1) = sCosine';
+ANOVA1(:,2) = sEuclidean';
+ANOVA1(:,3) = sFuzzy';
+ANOVA1(:,4) = sHierarchical';
+
+[pC,~,stats] = anova1(ANOVA1);
+
+if(pC>alpha)
+    disp(strcat('The models do not have different silhouette means for k=4 ',...
+        '- ANOVA 95% confidence and p-value= ',num2str(pC)));
+else
+    disp(strcat('The models have different silhouette means for k=4 ',...
+        '- ANOVA 95% confidence and p-value= ',num2str(pC)));
+end
+
+avgANOVA1 =mean(ANOVA1);
+[~ ,i1] = max(avgANOVA1);
+
+if (method == 1)
+    n = 2;
+    [xu,ind] = unique(avgANOVA1);
+    y = [xu(end-n+1) ind(end-n+1)];
+    i2 = y(2);
+    disp('Two Methods have the the best silhouette mean for k=4');
+else
+    i2 = -1;
+    disp('One Method has the the best silhouette mean for k=4');
+end
+
+if (i1==1 || i2 ==1)
+    disp(strcat('K-means - Cosine - Silhouette mean: ',...
+        num2str(mean(sCosine,2))) );
+end
+if (i1==2 || i2 ==2)
+    disp(strcat('K-means - Euclidean - Silhouette mean: ',...
+        num2str(mean(sEuclidean,2))) );
+end
+if (i1==3 || i2 ==3)
+    disp(strcat('Fuzzy Clustering - Silhouette mean: ',...
+        num2str(mean(sFuzzy,2))) );
+end
+if (i1==4 || i2 ==4)
+    disp(strcat('Hierarchical Clustering - Silhouette mean: ',...
+        num2str(mean(sHierarchical,2))) );
+end
+
+%% Finding the best cluster model - ANOVA
+
+alpha = 0.05;
+
+ANOVA(:,1) = clusterscoreC;
+ANOVA(:,2) = clusterscoreE;
+ANOVA(:,3) = clusterscoreF;
+ANOVA(:,4) = clusterscoreF;
+
+[p,tbl,stats] = anova1(ANOVA);
+
+if(p>alpha)
+    disp(strcat('The models do not have different means (clusterscore) ',...
+        '- ANOVA 95% confidence and p-value= ',num2str(p)));
+else
+    disp(strcat('The models have different means (clusterscore) ',...
+        '- ANOVA 95% confidence and p-value= ',num2str(p)));
+end
+
+[value i] = max(mean(ANOVA));
+
+if (i==1)
+    disp('K-means - Cosine has the best clusterscore');
+elseif (i==2)
+    disp('K-means - Euclidean has the best clusterscore');
+elseif (i==3)
+    disp('Fuzzy Clustering has the best clusterscore');
+else
+    disp('Hierarchical Clustering has the best clusterscore');
+end
