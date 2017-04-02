@@ -276,6 +276,7 @@ classify=zeros(77,1);
  
 
 %% ANOVA - Silhouette coefficent
+%the following matrices are made up of silhouette values for each method, for 4 clusters
 sHierarchical(:,r) = mean(silhouette(xPCAwhite',C));
 sFuzzy(:,r) = mean(silhouette(xPCAwhite',classify));
 sEuclidean(:,i) = mean(silhouette(xPCAwhite',idxEuclideanx));
