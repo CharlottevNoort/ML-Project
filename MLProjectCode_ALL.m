@@ -241,7 +241,6 @@ figure;
 xlabel('Patients')
 ylabel('Distance (squared Euclidean)')
 C = cluster(Z,'maxclust',4);
-%Table_HC = crosstab(C,PAM_groups)
 figure;
 [s,h] = silhouette(X,C) %Output "s" contains Silhouette score for each point/patient
 adjrand(C,PAM_groups)
@@ -254,7 +253,6 @@ figure;
 xlabel('Patients')
 ylabel('Distance (cosine)')
 C = cluster(Z,'maxclust',4);
-%Table_HC = crosstab(C,PAM_groups)
 figure;
 [s,h] = silhouette(X,C) %Output "s" contains Silhouette score for each point/patient
 adjrand(C,PAM_groups)
