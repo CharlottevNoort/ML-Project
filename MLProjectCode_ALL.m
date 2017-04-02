@@ -266,6 +266,7 @@ adjrand(C,PAM_groups)
 
 %% Fuzzy clustering 
 %fcm(matrix,number_of_clusters)
+%first option to be adjusted in large dataset, min of 1.0 and default 2.0
        options=[NaN 3000 0 NaN]
        [center,U,obj_fcn] = fcm(data,3,options);
         maxU = max(U);
@@ -280,6 +281,10 @@ adjrand(C,PAM_groups)
          
  %calc RAND, PAM_groups=patient clustered by cancer type        
         AR=adjrand(classify,PAM_groups)
+   %silhouette       
+        [s,h] = silhouette(data,classify)
+        silhouette_score=mean(s)
+                
                  
 
 %% ANOVA
