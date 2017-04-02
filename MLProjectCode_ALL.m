@@ -257,4 +257,4 @@ adjrand(C,PAM_groups)
         AR=adjrand(classify,PAM_groups)
                  
 
-%% T-test
+%% ANOVA
