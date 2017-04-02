@@ -186,6 +186,8 @@ grid('on');
 % Create legend
 legend('show');
 
+
+
 %% K-means Clustering
 
 [IDX,C,sumd,d] = kmeans(M_PAM_20_KNN8,4,'distance','cosine','Replicates',20);
@@ -209,8 +211,14 @@ for l = lines'
 end
 title('Distance matrix ordered with kmeans 4 clusters')
 
-%% Hierarchical clustering
+%Adjusted RAND
+[AR,RI]=RandIndex(IDX,PAM_groups) 
+%silhouette       
+[s,h] = silhouette(data,IDX)
+silhouette_score=mean(s)
 
+
+%% Hierarchical clustering
 X = score(:,1:54)
 
 % Squared Euclidean distance
@@ -264,26 +272,28 @@ figure;
 [s,h] = silhouette(X,C)
 adjrand(C,PAM_groups)
 
+
+
 %% Fuzzy clustering 
 %fcm(matrix,number_of_clusters)
 %first option to be adjusted in large dataset, min of 1.0 and default 2.0
-       options=[NaN 3000 0 NaN]
-       [center,U,obj_fcn] = fcm(data,3,options);
-        maxU = max(U);
+ data = score(:,1:54)
+ options=[1.1 3000 0 NaN]
+ [center,U,obj_fcn] = fcm(data,3,options);
+ maxU = max(U);
 % U contains values for each patients association with each cluster
 % maxU is the highest value for each patient
 % gives each patient a label, 1-n, n=#of clusters        
-         classify=zeros(77,1);
-         for i=1:77;
-             [max_value,row]=max(U(:,i));
-             classify(i,1)=row;
-         end
-         
+classify=zeros(77,1);
+  for i=1:77;
+    [max_value,row]=max(U(:,i));
+     classify(i,1)=row;
+  end         
  %calc RAND, PAM_groups=patient clustered by cancer type        
-        AR=adjrand(classify,PAM_groups)
+   AR=adjrand(classify,PAM_groups)
    %silhouette       
-        [s,h] = silhouette(data,classify)
-        silhouette_score=mean(s)
+   [s,h] = silhouette(data,classify)
+   silhouette_score=mean(s)
                 
                  
 
