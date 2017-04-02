@@ -79,30 +79,6 @@ display('Running Principal Component Analysis ...')
 
 [loadings,score,latent,tsquared,explained,mu] = pca(M10_knn8, 'Economy', false);
 
-%% Whitening
-
-display('Whitening data ...')
-
-X = score;
-sigma = X * X' / size(X,2);
-[Uwhite,Swhite,~] = svd(sigma);
-clear sigma;
-epsilon = 0.000001; %small constant
-xPCAwhite = diag(1./sqrt(diag(Swhite(:,:)) + epsilon)) * Uwhite(:,:)' * X;
-
-%% Plotting PCA vs Whitened PCA
-% Shows that there are differences, for ecplanation of why whitening is needed
-
-diagS = diag(Swhite);
-ax3 = subplot(2,2,3);
-plot(ax3,1:100,100*cumsum(PCAVar(1:100))/sum(PCAVar(1:100)),'r-^',...
-    1:100,100*cumsum(diagS(1:100))/sum(diagS(1:100)),'b-o');
-xlabel('Number of Principal Components');
-ylabel('Percent Variance Explained in X');
-legend({'PCA' 'PCA Whitening'},'location','SE');
-grid('on');
-clear diagS S PCAVar;
-
 %% K-fold cross validation
 % To determine optimal number of Principal Components
 
