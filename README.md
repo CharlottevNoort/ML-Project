@@ -28,3 +28,4 @@ Matrix conatining original data for the PAM50 proteins, as extracted from data_b
 PAM50_groups.mat
 List of groups to which each patient belongs according to PAM50-mRNA analysis.
 Extracted from additional .csv file on clinical data of the patients, obtained from kaggle.com.
+Each breast cancer type was assigned a number (1-4) to facilitate comparison to clusterings created in the project.
