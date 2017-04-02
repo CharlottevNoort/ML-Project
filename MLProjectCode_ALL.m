@@ -239,7 +239,7 @@ figure;
 adjrand(C,PAM_groups)
 
 % Cosine
-Y = pdist(X,'squaredeuclidean');
+Y = pdist(X,'cosine');
 Z = linkage(Y,'weighted');
 
 R = [];
