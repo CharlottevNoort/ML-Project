@@ -216,17 +216,42 @@ X = score(:,1:54)
 % Squared Euclidean distance
 Y = pdist(X,'squaredeuclidean');
 Z = linkage(Y,'weighted');
+
+R = [];
+for cluster_nr = 1:10
+  C = cluster(Z,'maxclust',cluster_nr);
+  [s,h] = silhouette(X,C);
+  R = [ R; cluster_nr mean(s)];
+end
+figure;
+plot( R(:,1),R(:,2),'r*-.');
+xlabel('Number of clusters')
+ylabel('Average Silhouette score')
+
 figure;
 [H, T] = dendrogram(Z,0,'Colorthreshold',44900);
 xlabel('Patients')
 ylabel('Distance (squared Euclidean)')
 C = cluster(Z,'maxclust',4);
-%Table_HC = crosstab(C,PAM_groups)
+
 figure;
 [s,h] = silhouette(X,C)
 adjrand(C,PAM_groups)
 
 % Cosine
+Y = pdist(X,'squaredeuclidean');
+Z = linkage(Y,'weighted');
+
+R = [];
+for cluster_nr = 1:10
+  C = cluster(Z,'maxclust',cluster_nr);
+  [s,h] = silhouette(X,C);
+  R = [ R; cluster_nr mean(s)];
+end
+figure;
+plot( R(:,1),R(:,2),'r*-.');
+xlabel('Number of clusters')
+ylabel('Average Silhouette score')
 Y = pdist(X,'cosine');
 Z = linkage(Y,'weighted');
 figure;
@@ -234,7 +259,7 @@ figure;
 xlabel('Patients')
 ylabel('Distance (cosine)')
 C = cluster(Z,'maxclust',4);
-%Table_HC = crosstab(C,PAM_groups)
+
 figure;
 [s,h] = silhouette(X,C)
 adjrand(C,PAM_groups)
