@@ -211,18 +211,19 @@ title('Distance matrix ordered with kmeans 4 clusters')
 
 %% Hierarchical clustering
 
-X = xPCAwhite(:,1:54)
+X = score(:,1:54)
 
 % Squared Euclidean distance
 Y = pdist(X,'squaredeuclidean');
 Z = linkage(Y,'weighted');
 figure;
-[H, T] = dendrogram(Z,0,'Colorthreshold',0.98);
+[H, T] = dendrogram(Z,0,'Colorthreshold',44900);
 xlabel('Patients')
 ylabel('Distance (squared Euclidean)')
 C = cluster(Z,'maxclust',4);
+%Table_HC = crosstab(C,PAM_groups)
 figure;
-[s,h] = silhouette(X,C) %Output "s" contains Silhouette score for each point/patient
+[s,h] = silhouette(X,C)
 adjrand(C,PAM_groups)
 
 % Cosine
@@ -233,8 +234,9 @@ figure;
 xlabel('Patients')
 ylabel('Distance (cosine)')
 C = cluster(Z,'maxclust',4);
+%Table_HC = crosstab(C,PAM_groups)
 figure;
-[s,h] = silhouette(X,C) %Output "s" contains Silhouette score for each point/patient
+[s,h] = silhouette(X,C)
 adjrand(C,PAM_groups)
 
 %% Fuzzy clustering 
