@@ -57,8 +57,7 @@ percent_MV = sum_MV/966581*100
 
 nrows = size(M,1);
 
-M10 = M(:,sum(isnan(M),1)/nrows*100<10);
-M20 = M(:,sum(isnan(M),1)/nrows*100<20);
+M10 = M(:,sum(isnan(M),1)/nrows*100<10)
 clear nrows;
 
 %% Impute missing values using k-Nearest Neighbors
@@ -66,12 +65,9 @@ clear nrows;
 % Default distance measure: Euclidean
 % Input: M10 and M20 from previous section
 
-M10_knn5 = knnimpute(M10',5)';
 M10_knn8 = knnimpute(M10',8)';
-M20_knn5 = knnimpute(M20',5)';
-M20_knn8 = knnimpute(M20',8)';
 
-clear M10 M20
+clear M10
 
 %% Principal Component Analysis
 % For reduction of dimensionality
@@ -81,28 +77,12 @@ clear M10 M20
 
 display('Running Principal Component Analysis ...')
 
-[loadings,score,latent,tsquared,explained,mu] = pca(M10_knn5, 'Economy', false);
-scores_M10_5 = score;
 [loadings,score,latent,tsquared,explained,mu] = pca(M10_knn8, 'Economy', false);
-scores_M10_8 = score;
-[loadings,score,latent,tsquared,explained,mu] = pca(M20_knn5, 'Economy', false);
-scores_M20_5 = score;
-[loadings,score,latent,tsquared,explained,mu] = pca(M20_knn8, 'Economy', false);
-scores_M20_8 = score;
 
 %% Whitening
 
 display('Whitening data ...')
 
-% I commented this out because I'm pretty sure it doesn't work and I don't think the output is connected to anything.
-% If it is necessary add it back in. Just trying to clean up. -AG
-% as far as I can tell xPCAwhite does the whitening.
-% SMW10_knn5 = whiten(M10_knn5)
-% SWM10_knn8 = whiten(M10_knn8)
-% SWM20_knn5 = whiten(M20_knn5)
-% SWM20_knn8 = whiten(M20_knn8)
-
-%this looks like whitening
 X = score;
 sigma = X * X' / size(X,2);
 [Uwhite,Swhite,~] = svd(sigma);
@@ -127,7 +107,7 @@ clear diagS S PCAVar;
 % To determine optimal number of Principal Components
 
 %for k = [5 8]
-[RMSECV,CI] = pcaKFold(M20_knn8,10); %CI gives the confidence interval
+[RMSECV,CI] = pcaKFold(M10_knn8,10); %CI gives the confidence interval
 
 errorbar(RMSECV,CI','DisplayName','10-fold Cross-validation',...
     'MarkerFaceColor',[1 0 0],...
