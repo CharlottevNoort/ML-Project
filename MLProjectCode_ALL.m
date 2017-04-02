@@ -220,7 +220,7 @@ Z = linkage(Y,'weighted');
 R = [];
 for cluster_nr = 1:10
   C = cluster(Z,'maxclust',cluster_nr);
-  [s,h] = silhouette(X,C);
+  s = silhouette(X,C);
   R = [ R; cluster_nr mean(s)];
 end
 figure;
@@ -245,7 +245,7 @@ Z = linkage(Y,'weighted');
 R = [];
 for cluster_nr = 1:10
   C = cluster(Z,'maxclust',cluster_nr);
-  [s,h] = silhouette(X,C);
+  s = silhouette(X,C);
   R = [ R; cluster_nr mean(s)];
 end
 figure;
