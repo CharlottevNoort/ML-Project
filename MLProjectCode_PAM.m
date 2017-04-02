@@ -24,7 +24,8 @@ M_PAM_10_KNN8 = knnimpute(M_PAM_10',8)';
 %% Mean Centering
 % Input: M_PAM_10_KNN8 from previous section
 
-mc_M_PAM_10_KNN8 = ................................
+[mcx,mx] = mncn(M_PAM_10_KNN8)
+mc_M_PAM_10_KNN8 = mcx
 
 %% Hierarchical Clustering
 
